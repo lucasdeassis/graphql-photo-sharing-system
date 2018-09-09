@@ -1,7 +1,12 @@
 directive @loggedIn on OBJECT | FIELD_DEFINITION
 
+type LoginPayload {
+    user: User!,
+    token: String!
+}
+
 type Mutation {
     register(username: String!, password: String!): User!
-    login(username: String!, password: String!): User!
+    login(username: String!, password: String!): LoginPayload!
     logout: Boolean! @loggedIn
 }
