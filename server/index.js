@@ -6,11 +6,11 @@ const { apolloUploadExpress } = require('apollo-upload-server');
 const jwt = require('express-jwt');
 const { createDatabase } = require('./database');
 const createGraphQLSchema = require('./graphql');
+const { secret } = require('./config');
 
 const DEFAULT_PORT = 3001;
-const DEFAULT_SECRET = 'totally-unguessable-jwt-secret';
 
-const createServer = async ({ secret = DEFAULT_SECRET }) => {
+const createServer = async () => {
   const app = express();
   const schema = await createGraphQLSchema();
   const db = await createDatabase();
@@ -33,8 +33,8 @@ const createServer = async ({ secret = DEFAULT_SECRET }) => {
   return app;
 };
 
-const launchServer = async ({ port = DEFAULT_PORT, secret }) => {
-  const server = await createServer({ secret });
+const launchServer = async ({ port = DEFAULT_PORT }) => {
+  const server = await createServer();
   return new Promise((resolve, reject) =>
     server.listen(port, err => (err ? reject(err) : resolve({ port, server }))));
 };
@@ -42,7 +42,7 @@ const launchServer = async ({ port = DEFAULT_PORT, secret }) => {
 if (module.parent) {
   module.exports = { createServer, launchServer };
 } else {
-  launchServer({ port: process.env.PORT, secret: process.env.SECRET }).then(
+  launchServer({ port: process.env.PORT }).then(
     /* eslint-disable no-console */
     ({ port }) => {
       console.log(`Server listening on http://localhost:${port}`);
