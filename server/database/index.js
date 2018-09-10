@@ -20,6 +20,13 @@ const createDatabase = ({ filename = defaultDatabaseFilename(), autoload = true,
     {},
   );
 
+const clearDatabase = async () => {
+  const db = await createDatabase();
+
+  await db.users.remove({}, { multi: true });
+  await db.photos.remove({}, { multi: true });
+};
+
 const seedDatabase = async (query, seedName) => {
   /* eslint-disable global-require */
   /* eslint-disable import/no-dynamic-require */
@@ -29,4 +36,4 @@ const seedDatabase = async (query, seedName) => {
   await up(query);
 };
 
-module.exports = { createDatabase, seedDatabase };
+module.exports = { createDatabase, clearDatabase, seedDatabase };
