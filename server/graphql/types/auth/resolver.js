@@ -1,17 +1,11 @@
+const User = require('../../../models/user');
+
 module.exports = {
-    resolver: {
-        Mutation: {
-            register: async (root, args, context) => {
-                // TODO: Handle user registration
-            },
+  resolver: {
+    Mutation: {
+      register: async (root, { username, password }, { db }) => User.register(db, username, password),
 
-            login: async (root, args, context) => {
-                // TODO: Handle user login here
-            },
-
-            logout: async (root, args, context) => {
-                // TODO: Handle user logout here
-            },
-        },
+      login: async (root, { username, password }, { db }) => User.login(db, username, password),
     },
+  },
 };

@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const crypto = require('crypto');
+const { crypto: { salt, iterations } } = require('../../config');
 
 const fetchPlaceholderImage = async (type, width, height) => {
   const url = `http://place${type}.com/${width}/${height}`;
@@ -11,8 +12,7 @@ const fetchPlaceholderImage = async (type, width, height) => {
 const testUsers = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }].map(({ id, name }) => ({
   _id: id,
   name,
-  password: crypto.pbkdf2Sync('testPassword', 'd087ff9df4069d0198540f6bd6784e52​​​​​', 10000, 256, 'sha256').toString('hex'),
-  salt: 'd087ff9df4069d0198540f6bd6784e52​​​​​',
+  password: crypto.pbkdf2Sync('testPassword', salt, iterations, 256, 'sha256').toString('hex'),
 }));
 
 const testPhotos = async () =>
