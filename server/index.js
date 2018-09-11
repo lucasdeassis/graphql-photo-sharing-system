@@ -6,7 +6,7 @@ const { apolloUploadExpress } = require('apollo-upload-server');
 const jwt = require('express-jwt');
 const { createDatabase } = require('./database');
 const createGraphQLSchema = require('./graphql');
-const { secret } = require('./config');
+const { secret, upload: uploadConfig } = require('./config');
 
 const DEFAULT_PORT = 3001;
 
@@ -25,7 +25,7 @@ const createServer = async () => {
     cors(),
     jwt({ secret, credentialsRequired: false }),
     bodyParser.json(),
-    apolloUploadExpress(),
+    apolloUploadExpress(uploadConfig),
   );
 
   server.applyMiddleware({ app });
