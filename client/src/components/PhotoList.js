@@ -30,4 +30,6 @@ PhotoListInner.defaultProps = {
     data: {},
 };
 
-export const PhotoList = () => <AllPhotos>{PhotoListInner}</AllPhotos>;
+const PhotoList = () => <AllPhotos>{PhotoListInner}</AllPhotos>;
+
+export default PhotoList;
