@@ -6,6 +6,5 @@ module.exports = {
   },
   upload: {
     maxFileSize: 10000000,
-    maxFiles: 1,
   },
 };
