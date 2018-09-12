@@ -12,9 +12,7 @@ module.exports = {
       photo: (root, { id }, { db, user }) => Photo.query.photo(db, id, user),
     },
     Mutation: {
-      uploadPhoto: async (root, { image }, { user, db }) => {
-        // TODO: handle uploadPhoto
-      },
+      uploadPhoto: (root, args, { user, db }) => Photo.mutation.uploadPhoto(db, user, args),
 
       editPhoto: async (root, args, { user }) => {
         // TODO: handle editPhoto
