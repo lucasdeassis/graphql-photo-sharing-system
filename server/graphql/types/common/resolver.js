@@ -1,5 +1,5 @@
 const { GraphQLDateTime } = require('graphql-iso-date');
-const { GraphQLUpload } = require('apollo-upload-server');
+const { GraphQLUpload } = require('apollo-server-express');
 
 module.exports = {
   resolver: {

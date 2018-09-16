@@ -12,14 +12,15 @@ module.exports = {
       photo: (root, { id }, { db, user }) => Photo.query.photo(db, id, user),
     },
     Mutation: {
-      uploadPhoto: (root, args, { user, db }) => Photo.mutation.uploadPhoto(db, user, args),
+      uploadPhoto: async (root, args, { user, db }) => {
+        const { _id } = await Photo.mutation.uploadPhoto(db, user, args);
 
-      editPhoto: async (root, args, { user }) => {
-        // TODO: handle editPhoto
+        return Photo.query.photo(db, _id, user);
       },
-      deletePhoto: async (root, args, { user }) => {
-        // TODO: handle deletePhoto
-      },
+
+      editPhoto: (root, args, { user, db }) => Photo.mutation.editPhoto(db, user, args),
+
+      deletePhoto: (root, args, { user, db }) => Photo.mutation.deletePhoto(db, user, args),
     },
     Subscription: {
       photoAdded: async (root, args, ctx) => {
