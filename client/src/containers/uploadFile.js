@@ -3,8 +3,8 @@ import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 
 export const UPLOAD_FILE = gql`
- mutation UploadPhoto($file: Upload!, $caption: String, $isPrivate: Boolean) {
-    uploadPhoto(file: $file, caption: $caption, isPrivate: $isPrivate) {
+ mutation UploadPhoto($image: Upload!, $caption: String, $private: Boolean) {
+    uploadPhoto(image: $image, caption: $caption, private: $private) {
       id
     }
   }
@@ -16,8 +16,8 @@ export default () => (
             <input
                 type="file"
                 required
-                onChange={({ target: { validity, files: [file] } }) =>
-                    validity.valid && uploadPhoto({ variables: { file, caption: 'Test File', isPrivate: true } })
+                onChange={({ target: { validity, files: [image] } }) =>
+                    validity.valid && uploadPhoto({ variables: { image, caption: 'Test File', private: true } })
                 }
             />
         )}

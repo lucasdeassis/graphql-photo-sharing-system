@@ -63,7 +63,7 @@ module.exports = {
   },
 
   mutation: {
-    uploadPhoto: async (database, user, { image, caption, isPrivate }) => {
+    uploadPhoto: async (database, user, { image, caption, private: isPrivate }) => {
       const { stream } = await image;
 
       const { width, height, base64Image } = await processImage(stream);
