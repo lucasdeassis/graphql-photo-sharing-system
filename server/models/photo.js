@@ -97,17 +97,19 @@ module.exports = {
         },
       );
 
-      return updated
-        ? database.photos.findOne({ _id: parsedId })
-        : new Error(`Photo with id ${parsedId} not found.`);
+      return updated;
     },
 
-    deletePhoto: (database, user, { id }) =>
-      database.photos.remove({
+    deletePhoto: async (database, user, { id }) => {
+      const parsedId = parseInt(id, 10);
+      const deleted = await database.photos.remove({
         $and: [
-          { _id: parseInt(id, 10) },
+          { _id: parsedId },
           { ownerId: user.id },
         ],
-      }),
+      });
+
+      return deleted;
+    },
   },
 };

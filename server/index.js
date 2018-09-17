@@ -2,13 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const { ApolloServer } = require('apollo-server-express');
 const jwt = require('express-jwt');
+const { createServer } = require('http');
 const { createDatabase } = require('./database');
 const createGraphQLSchema = require('./graphql');
 const { secret, upload } = require('./config');
 
 const DEFAULT_PORT = 3001;
 
-const createServer = async () => {
+const buildServer = async () => {
   const app = express();
   const schema = await createGraphQLSchema();
   const db = await createDatabase();
@@ -30,17 +31,20 @@ const createServer = async () => {
 
   server.applyMiddleware({ app });
 
+  const httpServer = createServer(app);
+  server.installSubscriptionHandlers(httpServer);
+
   return app;
 };
 
 const launchServer = async ({ port = DEFAULT_PORT }) => {
-  const server = await createServer();
+  const server = await buildServer();
   return new Promise((resolve, reject) =>
     server.listen(port, err => (err ? reject(err) : resolve({ port, server }))));
 };
 
 if (module.parent) {
-  module.exports = { createServer, launchServer };
+  module.exports = { buildServer, launchServer };
 } else {
   launchServer({ port: process.env.PORT }).then(
     /* eslint-disable no-console */

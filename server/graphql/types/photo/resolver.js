@@ -1,5 +1,12 @@
+const { PubSub } = require('apollo-server-express');
 const Photo = require('../../../models/photo');
 
+const pubsub = new PubSub();
+const PHOTO_ADDED = 'PHOTO_ADDED';
+const PHOTO_EDITED = 'PHOTO_EDITED';
+const PHOTO_DELETED = 'PHOTO_DELETED';
+
+/* eslint-disable no-underscore-dangle */
 module.exports = {
   resolver: {
     Photo: { id: ({ _id }) => _id },
@@ -13,24 +20,52 @@ module.exports = {
     },
     Mutation: {
       uploadPhoto: async (root, args, { user, db }) => {
-        const { _id } = await Photo.mutation.uploadPhoto(db, user, args);
+        const newPhoto = await Photo.mutation.uploadPhoto(db, user, args);
 
-        return Photo.query.photo(db, _id, user);
+        if (newPhoto.id) {
+          pubsub.publish(PHOTO_ADDED, newPhoto);
+        } else {
+          throw new Error(`Could not upload photo ${args.image.name} and add to database.`);
+        }
+
+        return Photo.query.photo(db, newPhoto.id, user);
       },
 
-      editPhoto: (root, args, { user, db }) => Photo.mutation.editPhoto(db, user, args),
+      editPhoto: async (root, args, { user, db }) => {
+        const edited = await Photo.mutation.editPhoto(db, user, args);
 
-      deletePhoto: (root, args, { user, db }) => Photo.mutation.deletePhoto(db, user, args),
+        if (edited) {
+          const photo = await Photo.query.photo(db, args.id, user);
+          pubsub.publish(PHOTO_EDITED, photo);
+
+          return photo;
+        }
+
+        throw new Error(`Photo with id '${args.id}' was not found.`);
+      },
+
+      deletePhoto: async (root, args, { user, db }) => {
+        const deleted = await Photo.mutation.deletePhoto(db, user, args);
+
+        if (deleted) {
+          const photo = await Photo.query.photo(db, args.id, user);
+
+          pubsub.publish(PHOTO_DELETED, photo);
+          return true;
+        }
+
+        return false;
+      },
     },
     Subscription: {
-      photoAdded: async (root, args, ctx) => {
-        // TODO: handle photoAdded Subscription
+      photoAdded: {
+        subscribe: () => pubsub.asyncIterator(PHOTO_ADDED),
       },
-      photoEdited: async (root, args, ctx) => {
-        // TODO: handle photoEdited Subscription
+      photoEdited: {
+        subscribe: () => pubsub.asyncIterator(PHOTO_EDITED),
       },
-      photoDeleted: async (root, args, ctx) => {
-        // TODO: handle photoDeleted Subscription
+      photoDeleted: {
+        subscribe: () => pubsub.asyncIterator(PHOTO_DELETED),
       },
     },
   },
