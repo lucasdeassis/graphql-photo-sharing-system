@@ -1,12 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const { ApolloServer } = require('apollo-server-express');
-const { apolloUploadExpress } = require('apollo-upload-server');
 const jwt = require('express-jwt');
 const { createDatabase } = require('./database');
 const createGraphQLSchema = require('./graphql');
-const { secret } = require('./config');
+const { secret, upload } = require('./config');
 
 const DEFAULT_PORT = 3001;
 
@@ -15,18 +13,20 @@ const createServer = async () => {
   const schema = await createGraphQLSchema();
   const db = await createDatabase();
 
-  const server = new ApolloServer({
-    schema,
-    context: ({ req }) => ({ user: req.user, db }),
-  });
-
   app.use(
     '/graphql',
     cors(),
     jwt({ secret, credentialsRequired: false }),
-    bodyParser.json(),
-    apolloUploadExpress(),
   );
+
+  const server = new ApolloServer({
+    schema,
+    context: ({ req }) => ({ user: req.user, db }),
+    uploads: {
+      maxFileSize: upload.maxFileSize,
+    },
+  });
+
 
   server.applyMiddleware({ app });
 

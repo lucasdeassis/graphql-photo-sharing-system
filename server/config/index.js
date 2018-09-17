@@ -4,4 +4,7 @@ module.exports = {
     salt: 'd087ff9df4069d0198540f6bd6784e52​​​​​',
     iterations: 10000,
   },
+  upload: {
+    maxFileSize: 10000000,
+  },
 };
