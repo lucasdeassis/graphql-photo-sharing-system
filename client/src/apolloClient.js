@@ -8,9 +8,11 @@ import { ApolloLink, split } from 'apollo-link';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
+const SERVER_PORT = 3001;
+
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:3001/graphql',
+  uri: `ws://localhost:${SERVER_PORT}/graphql`,
   options: {
     reconnect: true,
   },
@@ -22,7 +24,9 @@ const terminatingLink = split(
     return kind === 'OperationDefinition' && operation === 'subscription';
   },
   wsLink,
-  createUploadLink({ uri: 'http://localhost:3001/graphql' }),
+  createUploadLink({
+    uri: `http://localhost:${SERVER_PORT}/graphql`,
+  }),
 );
 
 const link = ApolloLink.from([terminatingLink]);
