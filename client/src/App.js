@@ -1,16 +1,16 @@
 import React from 'react';
-import PhotoList from './components/PhotoList';
-import PhotoUpload from './containers/uploadFile';
+import AllPhotos from './containers/allPhotos';
+import UploadPhoto from './containers/uploadPhoto';
 import './App.css';
 
 const App = () => (
-    <div className="App">
-        <header className="App-header">
-            <h1 className="App-title">Welcome to Instasham</h1>
-        </header>
-        <PhotoList />
-        <PhotoUpload />
-    </div>
+  <div className="App">
+    <header className="App-header">
+      <h1 className="App-title">Welcome to Instasham</h1>
+    </header>
+    <AllPhotos />
+    <UploadPhoto />
+  </div>
 );
 
 export default App;

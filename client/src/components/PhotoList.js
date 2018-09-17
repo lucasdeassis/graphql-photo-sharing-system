@@ -1,35 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AllPhotos from '../containers/allPhotos';
 import Photo from './Photo';
 
-export const PhotoListInner = ({ loading, error, data }) => {
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error :(</div>;
+export const PhotoList = ({ data, subscribeToNewPhotos }) => {
+  subscribeToNewPhotos();
 
-    return (
-        <div className="PhotoList">
-            {data.photos.map(photo => <Photo key={photo.id} id={photo.id} width={photo.width} height={photo.height} />)}
-        </div>
-    );
+  return (
+    <div className="PhotoList">
+      {data.photos.map(photo => <Photo key={photo.id} id={photo.id} width={photo.width} height={photo.height} />)}
+    </div>
+  );
 };
 
-PhotoListInner.propTypes = {
-    loading: PropTypes.bool.isRequired,
-    error: PropTypes.instanceOf(Error), // eslint-disable-line react/require-default-props
-    data: PropTypes.shape({
-        photos: PropTypes.arrayOf(PropTypes.shape({
-            id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-            width: PropTypes.number,
-            height: PropTypes.number,
-        })),
-    }),
+PhotoList.propTypes = {
+  data: PropTypes.shape({
+    photos: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+      width: PropTypes.number,
+      height: PropTypes.number,
+    })),
+  }),
+  subscribeToNewPhotos: PropTypes.func.isRequired,
 };
 
-PhotoListInner.defaultProps = {
-    data: {},
+PhotoList.defaultProps = {
+  data: {},
 };
 
-const PhotoList = () => <AllPhotos>{PhotoListInner}</AllPhotos>;
 
 export default PhotoList;
