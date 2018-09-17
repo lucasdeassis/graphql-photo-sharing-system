@@ -3,6 +3,7 @@ const cors = require('cors');
 const { ApolloServer } = require('apollo-server-express');
 const jwt = require('express-jwt');
 const { createServer } = require('http');
+const { PubSub } = require('apollo-server-express');
 const { createDatabase } = require('./database');
 const createGraphQLSchema = require('./graphql');
 const { secret, upload } = require('./config');
@@ -13,6 +14,7 @@ const buildServer = async () => {
   const app = express();
   const schema = await createGraphQLSchema();
   const db = await createDatabase();
+  const pubsub = new PubSub();
 
   app.use(
     '/graphql',
@@ -22,7 +24,7 @@ const buildServer = async () => {
 
   const server = new ApolloServer({
     schema,
-    context: ({ req }) => ({ user: req.user, db }),
+    context: ({ req = {} }) => ({ user: req.user, db, pubsub }),
     uploads: {
       maxFileSize: upload.maxFileSize,
     },
@@ -34,7 +36,7 @@ const buildServer = async () => {
   const httpServer = createServer(app);
   server.installSubscriptionHandlers(httpServer);
 
-  return app;
+  return httpServer;
 };
 
 const launchServer = async ({ port = DEFAULT_PORT }) => {

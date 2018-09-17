@@ -13,9 +13,9 @@ export const GET_ALL_PHOTOS = gql`
     }
 `;
 
-export const PHOTO_SUBSCRIPTION = trigger => gql`
+export const NEW_PHOTO_SUBSCRIPTION = gql`
   subscription {
-    ${trigger} {
+    photoAdded {
       id
       width,
       height,
@@ -36,14 +36,14 @@ const AllPhotos = () => (
           <PhotoList
             data={data}
             subscribeToNewPhotos={() => subscribeToMore({
-              document: PHOTO_SUBSCRIPTION('photoDeleted'),
+              document: NEW_PHOTO_SUBSCRIPTION,
               updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
 
                 return {
                   photos: [
-                    ...prev.messages,
                     subscriptionData.data.photoAdded,
+                    ...prev.photos,
                   ],
                 };
               },

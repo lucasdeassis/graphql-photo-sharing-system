@@ -2,15 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Photo from './Photo';
 
-export const PhotoList = ({ data, subscribeToNewPhotos }) => {
-  subscribeToNewPhotos();
+export class PhotoList extends React.Component {
+  componentDidMount() {
+    this.props.subscribeToNewPhotos();
+  }
 
-  return (
-    <div className="PhotoList">
-      {data.photos.map(photo => <Photo key={photo.id} id={photo.id} width={photo.width} height={photo.height} />)}
-    </div>
-  );
-};
+  render() {
+    const { data } = this.props;
+
+    return (
+      <div className="PhotoList">
+        {data.photos.map(photo => <Photo key={photo.id} id={photo.id} width={photo.width} height={photo.height} />)}
+      </div>
+    );
+  }
+}
 
 PhotoList.propTypes = {
   data: PropTypes.shape({
