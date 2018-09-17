@@ -1,4 +1,4 @@
-directive @loggedIn on OBJECT | FIELD_DEFINITION
+directive @loggedIn on FIELD_DEFINITION
 
 type LoginPayload {
     user: User!,

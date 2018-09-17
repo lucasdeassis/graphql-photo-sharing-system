@@ -14,7 +14,6 @@ class LoggedInDirective extends SchemaDirectiveVisitor {
   }
 
   static ensureFieldsWrapped(type) {
-    if (type.loginWrapped) return;
     type.loginWrapped = true;
 
     Object.values(type.getFields()).forEach((field) => {
