@@ -13,9 +13,29 @@ export const GET_ALL_PHOTOS = gql`
     }
 `;
 
-export const NEW_PHOTO_SUBSCRIPTION = gql`
+export const ADD_PHOTO_SUBSCRIPTION = gql`
   subscription {
     photoAdded {
+      id
+      width,
+      height,
+    }
+  }
+`;
+
+export const DELETE_PHOTO_SUBSCRIPTION = gql`
+  subscription {
+    photoDeleted {
+      id
+      width,
+      height,
+    }
+  }
+`;
+
+export const EDIT_PHOTO_SUBSCRIPTION = gql`
+  subscription {
+    photoEdited {
       id
       width,
       height,
@@ -35,8 +55,8 @@ const AllPhotos = () => (
         return (
           <PhotoList
             data={data}
-            subscribeToNewPhotos={() => subscribeToMore({
-              document: NEW_PHOTO_SUBSCRIPTION,
+            subscribeToAddedPhotos={() => subscribeToMore({
+              document: ADD_PHOTO_SUBSCRIPTION,
               updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
 
@@ -45,6 +65,38 @@ const AllPhotos = () => (
                     subscriptionData.data.photoAdded,
                     ...prev.photos,
                   ],
+                };
+              },
+            })}
+
+            subscribeToDeletedPhotos={() => subscribeToMore({
+              document: DELETE_PHOTO_SUBSCRIPTION,
+              updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+
+                const photos = [...prev.photos];
+                const photoDeletedIndex =
+                  photos.findIndex(value => value.id === subscriptionData.data.photoDeleted.id);
+                photos.splice(photoDeletedIndex, 1);
+
+                return {
+                  photos,
+                };
+              },
+            })}
+
+            subscribeToEditedPhotos={() => subscribeToMore({
+              document: EDIT_PHOTO_SUBSCRIPTION,
+              updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+
+                const photos = [...prev.photos];
+                const photoIndex =
+                  prev.photos.findIndex(value => value.id === subscriptionData.data.photoEdited.id);
+                photos[photoIndex] = subscriptionData.data.photoEdited;
+
+                return {
+                  photos,
                 };
               },
             })}

@@ -4,7 +4,9 @@ import Photo from './Photo';
 
 export class PhotoList extends React.Component {
   componentDidMount() {
-    this.props.subscribeToNewPhotos();
+    this.props.subscribeToAddedPhotos();
+    this.props.subscribeToDeletedPhotos();
+    this.props.subscribeToEditedPhotos();
   }
 
   render() {
@@ -26,7 +28,9 @@ PhotoList.propTypes = {
       height: PropTypes.number,
     })),
   }),
-  subscribeToNewPhotos: PropTypes.func.isRequired,
+  subscribeToAddedPhotos: PropTypes.func.isRequired,
+  subscribeToDeletedPhotos: PropTypes.func.isRequired,
+  subscribeToEditedPhotos: PropTypes.func.isRequired,
 };
 
 PhotoList.defaultProps = {
