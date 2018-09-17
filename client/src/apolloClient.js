@@ -26,6 +26,9 @@ const terminatingLink = split(
   wsLink,
   createUploadLink({
     uri: `http://localhost:${SERVER_PORT}/graphql`,
+    headers: { // Alice jwt token
+      authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkFsaWNlIiwiZXhwIjoxNTQyMzczNzE2LCJpYXQiOjE1MzcxOTMzMTZ9.9LrlnYEWgsAifDrkBit_AEjmn5vkgo6j-f0bB0-3lmc',
+    },
   }),
 );
 
