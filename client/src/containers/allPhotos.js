@@ -10,6 +10,10 @@ export const GET_ALL_PHOTOS = gql`
             width
             height
         }
+        me {
+          id
+          name
+        }
     }
 `;
 
