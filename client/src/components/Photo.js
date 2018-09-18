@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import PhotoData from '../containers/photo';
 import DeletePhoto from '../containers/deletePhoto';
+import EditPhoto from '../containers/editPhoto';
 import './Photo.css';
 
 const BASE_WIDTH = 600;
 
 export const PhotoPreview = ({
-  width, height, loading, error, data,
+  width, height, loading, error, data, userId,
 }) => {
   if (loading) {
     return (
@@ -43,7 +44,13 @@ export const PhotoPreview = ({
           <div className="PhotoPreview-metadata-caption">{photo.caption}</div>
         )}
 
-        <DeletePhoto id={photo.id} />
+        {
+          userId === photo.owner.id &&
+          [
+            <EditPhoto key={`${photo.id}edit`} id={photo.id} caption={photo.caption} private={photo.private} />,
+            <DeletePhoto key={`${photo.id}delete`} id={photo.id} />,
+          ]
+        }
       </div>
     </div>
   );
@@ -52,6 +59,7 @@ export const PhotoPreview = ({
 PhotoPreview.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
+  userId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   loading: PropTypes.bool.isRequired,
   error: PropTypes.instanceOf(Error), // eslint-disable-line react/require-default-props
   data: PropTypes.shape({
@@ -59,12 +67,13 @@ PhotoPreview.propTypes = {
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
       width: PropTypes.number,
       height: PropTypes.number,
+      caption: PropTypes.string,
+      private: PropTypes.bool,
       owner: PropTypes.shape({
         id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
           .isRequired,
         name: PropTypes.string.isRequired,
       }),
-      caption: PropTypes.string,
     }),
   }),
 };
@@ -73,4 +82,16 @@ PhotoPreview.defaultProps = {
   data: {},
 };
 
-export default props => <PhotoData {...props}>{PhotoPreview}</PhotoData>;
+const photoWrapper = ({
+  width, height, userId, ...props
+}) => (
+  <PhotoData {...props}>
+    {
+      newProps => PhotoPreview({
+        ...newProps, width, height, userId,
+      })
+    }
+  </PhotoData>
+);
+
+export default photoWrapper;

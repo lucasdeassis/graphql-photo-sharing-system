@@ -14,7 +14,9 @@ export class PhotoList extends React.Component {
 
     return (
       <div className="PhotoList">
-        {data.photos.map(photo => <Photo key={photo.id} id={photo.id} width={photo.width} height={photo.height} />)}
+        <h1>Welcome <b><i>{data.me.name}!</i></b></h1>
+        {data.photos.map(photo =>
+          <Photo key={photo.id} id={photo.id} userId={data.me.id} width={photo.width} height={photo.height} />)}
       </div>
     );
   }
@@ -27,6 +29,10 @@ PhotoList.propTypes = {
       width: PropTypes.number,
       height: PropTypes.number,
     })),
+    me: PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+      name: PropTypes.string,
+    }),
   }),
   subscribeToAddedPhotos: PropTypes.func.isRequired,
   subscribeToDeletedPhotos: PropTypes.func.isRequired,
